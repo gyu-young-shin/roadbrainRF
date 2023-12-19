@@ -852,9 +852,13 @@ void eth_cmd_info(char *par)
 	if(Flashdatarec.e2p_modbus_sel == 0)
 		sprintf(eth_sendbuf, "rtutcp: tcp\n\r");
 	else if(Flashdatarec.e2p_modbus_sel == 1)
-		sprintf(eth_sendbuf, "rtutcp: rtu\n\r");
-	else 
+		sprintf(eth_sendbuf, "rtutcp: rtu232\n\r");
+	else if(Flashdatarec.e2p_modbus_sel == 2)
 		sprintf(eth_sendbuf, "rtutcp: 232\n\r");
+	else if(Flashdatarec.e2p_modbus_sel == 3)
+		sprintf(eth_sendbuf, "rtutcp: rtu485\n\r");
+	else 
+		sprintf(eth_sendbuf, "rtutcp: 485\n\r");
 	
 	Send_Ethernet_Packet(eth_sendbuf);
 	
@@ -1295,12 +1299,19 @@ void eth_cmd_addr(char *par)
 	if(*data_var == NULL)
 	{
 		Send_Ethernet_Packet("addr [0-65535]\n\r"); 
-		if(Flashdatarec.e2p_modbus_sel == 1)		// RTU
-			sprintf(eth_sendbuf, "RTU:\n\rpacket num: %d\n\raddr=%d\n\r", packet_data_num + 1, 
-				Flashdatarec.e2p_mod_rtu[packet_data_num].mb_address); 
-		else
+		if(Flashdatarec.e2p_modbus_sel == 0)
+		{
 			sprintf(eth_sendbuf, "TCP:\n\rpacket num: %d\n\raddr=%d\n\r", packet_data_num + 1, 
-				Flashdatarec.e2p_mod_tcp[packet_data_num].mb_address); 
+			Flashdatarec.e2p_mod_tcp[packet_data_num].mb_address); 
+		}
+		else  // 232 //485 // RTU 
+		{
+			sprintf(eth_sendbuf, "RTU:\n\rpacket num: %d\n\raddr=%d\n\r", packet_data_num + 1, 
+			Flashdatarec.e2p_mod_rtu[packet_data_num].mb_address); 
+		}
+	
+		
+			
 			
 		Send_Ethernet_Packet(eth_sendbuf); 
 	}
@@ -1309,13 +1320,13 @@ void eth_cmd_addr(char *par)
 		tmp_var = atoi(data_var);
 		if(tmp_var <= 65535)
 		{
-			if(Flashdatarec.e2p_modbus_sel == 1)		// RTU
+			if(Flashdatarec.e2p_modbus_sel >= 1)		// RTU
 				Flashdatarec.e2p_mod_rtu[packet_data_num].mb_address = tmp_var;
 			else
 				Flashdatarec.e2p_mod_tcp[packet_data_num].mb_address = tmp_var;
 				
 			FlashRom_WriteData();
-			if(Flashdatarec.e2p_modbus_sel == 1)		// RTU
+			if(Flashdatarec.e2p_modbus_sel >= 1)		// RTU
 				sprintf(eth_sendbuf, "RTU:\n\rpacket num: %d\n\raddr=%d\n\r", packet_data_num + 1, 
 					Flashdatarec.e2p_mod_rtu[packet_data_num].mb_address); 
 			else
@@ -1340,12 +1351,13 @@ void eth_cmd_length(char *par)
 	if(*data_var == NULL)
 	{
 		Send_Ethernet_Packet("length [0-65535]\n\r"); 
-		if(Flashdatarec.e2p_modbus_sel == 1)		// RTU
-			sprintf(eth_sendbuf, "RTU:\n\rpacket num: %d\n\rlength=%d\n\r", packet_data_num + 1, 
+		if(Flashdatarec.e2p_modbus_sel == 0)		//TCP
+				sprintf(eth_sendbuf, "TCP:\n\rpacket num: %d\n\rlength=%d\n\r", packet_data_num + 1, 
+				Flashdatarec.e2p_mod_tcp[packet_data_num].mb_length); 	
+		else //RTU
+			
+				sprintf(eth_sendbuf, "RTU:\n\rpacket num: %d\n\rlength=%d\n\r", packet_data_num + 1, 
 				Flashdatarec.e2p_mod_rtu[packet_data_num].mb_length); 
-		else
-			sprintf(eth_sendbuf, "TCP:\n\rpacket num: %d\n\rlength=%d\n\r", packet_data_num + 1, 
-				Flashdatarec.e2p_mod_tcp[packet_data_num].mb_length); 
 			
 		Send_Ethernet_Packet(eth_sendbuf); 
 	}
@@ -1354,13 +1366,13 @@ void eth_cmd_length(char *par)
 		tmp_var = atoi(data_var);
 		if(tmp_var <= 65535)
 		{
-			if(Flashdatarec.e2p_modbus_sel == 1)		// RTU
+			if(Flashdatarec.e2p_modbus_sel >= 1)		// RTU
 				Flashdatarec.e2p_mod_rtu[packet_data_num].mb_length = tmp_var;
 			else
 				Flashdatarec.e2p_mod_tcp[packet_data_num].mb_length = tmp_var;
 				
 			FlashRom_WriteData();
-			if(Flashdatarec.e2p_modbus_sel == 1)		// RTU
+			if(Flashdatarec.e2p_modbus_sel >= 1)		// RTU
 				sprintf(eth_sendbuf, "RTU:\n\rpacket num: %d\n\rlength=%d\n\r", packet_data_num + 1, 
 					Flashdatarec.e2p_mod_rtu[packet_data_num].mb_length); 
 			else
@@ -1385,12 +1397,16 @@ void eth_cmd_enable(char *par)
 	if(*data_var == NULL)
 	{
 		Send_Ethernet_Packet("enable [0 | 1]\n\r"); 
-		if(Flashdatarec.e2p_modbus_sel == 1)		// RTU
-			sprintf(eth_sendbuf, "RTU:\n\rpacket num: %d\n\renable=%d\n\r", packet_data_num + 1, 
-				Flashdatarec.e2p_mod_rtu[packet_data_num].mb_enable); 
-		else
+		if(Flashdatarec.e2p_modbus_sel == 0)		// TCP
+		{
 			sprintf(eth_sendbuf, "TCP:\n\rpacket num: %d\n\renable=%d\n\r", packet_data_num + 1, 
 				Flashdatarec.e2p_mod_tcp[packet_data_num].mb_enable); 
+		}
+		else // RTU
+		{
+			sprintf(eth_sendbuf, "RTU:\n\rpacket num: %d\n\renable=%d\n\r", packet_data_num + 1, 
+				Flashdatarec.e2p_mod_rtu[packet_data_num].mb_enable); 
+		}
 			
 		Send_Ethernet_Packet(eth_sendbuf); 
 	}
@@ -1399,13 +1415,13 @@ void eth_cmd_enable(char *par)
 		tmp_var = atoi(data_var);
 		if((tmp_var == 0) || (tmp_var == 1))
 		{
-			if(Flashdatarec.e2p_modbus_sel == 1)		// RTU
+			if(Flashdatarec.e2p_modbus_sel >= 1)		// RTU
 				Flashdatarec.e2p_mod_rtu[packet_data_num].mb_enable = tmp_var;
 			else
 				Flashdatarec.e2p_mod_tcp[packet_data_num].mb_enable = tmp_var;
 				
 			FlashRom_WriteData();
-			if(Flashdatarec.e2p_modbus_sel == 1)		// RTU
+			if(Flashdatarec.e2p_modbus_sel >= 1)		// RTU
 				sprintf(eth_sendbuf, "RTU:\n\rpacket num: %d\n\renable=%d\n\r", packet_data_num + 1, 
 					Flashdatarec.e2p_mod_rtu[packet_data_num].mb_enable); 
 			else
