@@ -1,0 +1,9 @@
+knx_rfmodule\dns.o: ..\Sources\Internet\DNS\dns.c
+knx_rfmodule\dns.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+knx_rfmodule\dns.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+knx_rfmodule\dns.o: ../Sources/socket.h
+knx_rfmodule\dns.o: ../Sources/wizchip_conf.h
+knx_rfmodule\dns.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+knx_rfmodule\dns.o: ../Sources/W5100S/w5100s.h
+knx_rfmodule\dns.o: ../Sources/wizchip_conf.h
+knx_rfmodule\dns.o: ..\Sources\Internet\DNS\dns.h

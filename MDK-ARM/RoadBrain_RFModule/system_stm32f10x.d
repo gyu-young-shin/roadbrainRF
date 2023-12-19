@@ -1,0 +1,9 @@
+knx_rfmodule\system_stm32f10x.o: RTE\Device\STM32F103VC\system_stm32f10x.c
+knx_rfmodule\system_stm32f10x.o: C:\Users\jjy99\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include\stm32f10x.h
+knx_rfmodule\system_stm32f10x.o: .\RTE\_KNX_RFModule\RTE_Components.h
+knx_rfmodule\system_stm32f10x.o: ../Drivers/CMSIS/Include/core_cm3.h
+knx_rfmodule\system_stm32f10x.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+knx_rfmodule\system_stm32f10x.o: ../Drivers/CMSIS/Include/cmsis_version.h
+knx_rfmodule\system_stm32f10x.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
+knx_rfmodule\system_stm32f10x.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
+knx_rfmodule\system_stm32f10x.o: C:\Users\jjy99\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include\system_stm32f10x.h
